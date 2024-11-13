@@ -1,21 +1,26 @@
 import settings
 
 import os
+import aiohttp
 from colorama import Fore
 
 import discord
 from discord.ext import commands
 
-Sachs = commands.Bot(
+sachs = commands.Bot(
     command_prefix=settings.PREFIX,
     help_command=None
 )
 
-@Sachs.event
+@sachs.event
 async def on_ready():
     for file in os.listdir("./backend"):
         if file.endswith(".py"):
-            await Sachs.load_extension(f"backend.{file[:-3]}")
+            await sachs.load_extension(f"backend.{file[:-3]}")
+
+    async with aiohttp.ClientSession() as session:
+        await session.delete("https://ai-api.replit.app/api/v1/session", json={"session_id": sachs.user.id})
+        await session.post("https://ai-api.replit.app/api/v1/session", json={"session_id": sachs.user.id})
 
     os.system("clear")
 
@@ -25,6 +30,6 @@ async def on_ready():
     \ \___  \  \ \  __ \  \ \ \____  \ \  __ \  \ \___  \  
      \/\_____\  \ \_\ \_\  \ \_____\  \ \_\ \_\  \/\_____\ 
       \/_____/   \/_/\/_/   \/_____/   \/_/\/_/   \/_____/ 
-    Logged in as {Sachs.user}""")
+    Logged in as {sachs.user}""")
 
-Sachs.run(settings.TOKEN)
+sachs.run(settings.TOKEN)
