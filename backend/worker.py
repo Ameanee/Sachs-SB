@@ -13,8 +13,11 @@ content = [
 > `{p}status [type] [name]` - Changes your status
 > `{p}spam [count] [text]` - Spams text
 > `{p}aspam [count] [text]` - More advanced spam
-> `{p}iplookup [ip]` - Finds ip info""",
+> `{p}iplookup [ip]` - Finds ip info
+> `{p}token [token]` - Looks up token""",
 
     f"""# Fun Commands
-> `{p}ask_ai [question]` - Ask AI!"""
+> `{p}ask_ai [question]` - Ask AI!
+> `{p}cat` - Random cat pic
+> `{p}dog` - Random dog pic"""
 ]

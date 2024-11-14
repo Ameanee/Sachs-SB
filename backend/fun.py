@@ -17,5 +17,19 @@ class Fun (commands.Cog):
                 response = await req.json()
                 await ctx.message.reply(f"`{response['message']}`")
 
+    @commands.command()
+    async def cat (self, ctx):
+        async with aiohttp.ClientSession() as session:
+            async with session.get("https://api.thecatapi.com/v1/images/search") as req:
+                response = await req.json()
+                await ctx.message.reply(response[0]["url"])
+
+    @commands.command()
+    async def dog (self, ctx):
+        async with aiohttp.ClientSession() as session:
+            async with session.get("https://dog.ceo/api/breeds/image/random") as req:
+                response = await req.json()
+                await ctx.message.reply(response["message"])
+
 async def setup (sachs):
     await sachs.add_cog(Fun(sachs))

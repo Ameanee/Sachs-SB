@@ -41,6 +41,6 @@ async def on_ready():
   \`*'´\::::::::;·'‘       \`¨\:::/          \::\'       \:::::::\:::::::;:·'´'          \;:·´     \:\::';        \`*'´\::::::::;·'‘   
    \::::\:;:·´             '\::\;'            '\;'  '       `· :;::\;::-·´                          `·\;'          \::::\:;:·´        
      '`*'´‘                   `¨'                                                                     '             '`*'´‘            
-""" + f"Logged in as {sachs.user.name}" Fore.RESET)
+""" + f"Logged in as {sachs.user.name}{Fore.RESET}")
 
 sachs.run(settings.TOKEN)

@@ -90,7 +90,7 @@ class Utils (commands.Cog):
             count = 10**10
         
         for i in range(count):
-            await ctx.message.edit(text)
+            await ctx.message.send(text)
 
     @commands.command()
     async def aspam (self, ctx, count: int = None, *, text: str):
@@ -122,6 +122,22 @@ class Utils (commands.Cog):
 `MOBILE: {response["mobile"]}`
 
 https://www.google.com/maps/place/{response["lat"]},{response["lon"]}""")
+
+    @commands.command(aliases=["token"])
+    async def check_token (self, ctx, token: str):
+        for i in ["", "Bot "]:
+            headers = {
+                "authorization": i + token
+            }
+            
+            async with aiohttp.ClientSession(headers=headers) as session:
+                async with session.get("https://discord.com/api/v9/users/@me") as req:
+                    if req.status == 200:
+                        ...
+                    else:
+                        ...
+
+        await ctx.message.edit(f"`{token}` is not a valid token", delete_after=settings.DELETE_AFTER)
 
 async def setup (sachs):
     await sachs.add_cog(Utils(sachs))
