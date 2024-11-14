@@ -12,7 +12,10 @@ class Fun (commands.Cog):
         async with aiohttp.ClientSession() as session:
             async with session.post("https://ai-api.replit.app/api/v1/chat", json={
                 "message": question,
-                "session_id": self.sachs.id
+                "session_id": self.sachs.user.id
             }) as req:
                 response = await req.json()
                 await ctx.message.reply(f"`{response['message']}`")
+
+async def setup (sachs):
+    await sachs.add_cog(Fun(sachs))
