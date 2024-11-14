@@ -1,4 +1,5 @@
 import base64
+import asyncio
 
 import settings
 
@@ -10,8 +11,24 @@ class Utils (commands.Cog):
         self.sachs = sachs
 
     @commands.command()
+    async def help (ctx, category: str or int = None):
+        pages = {
+            "utils": 0,
+            "fun": 1
+        }
+        page = 0
+        
+        if category is not None:
+            page = pages[category]
+
+        if settings.EMBED:
+            await ctx.message.edit()
+        else:
+            await ctx.message.edit(content[page])
+
+    @commands.command()
     async def user (self, ctx, user: discord.User):
-        await ctx.message.edit(f"""## {user.display_name}
+        await ctx.message.edit(f"""# {user.display_name}
 `{user.name}`
         
 `ID: {user.id}`
@@ -25,7 +42,7 @@ class Utils (commands.Cog):
     @commands.command(aliases=["guild"])
     async def server (self, ctx):
         guild = ctx.guild
-        await ctx.message.edit(f"""##{guild.name}
+        await ctx.message.edit(f"""# {guild.name}
         
 `ID: {guild.id}`
 `OWNER: {guild.owner_id}`
@@ -64,6 +81,47 @@ class Utils (commands.Cog):
             act = discord.Activity(type=discord.ActivityType.watching, name=name)
 
         await self.sachs.change_presence(activity=act)
+
+    @commands.command()
+    async def spam (self, ctx, count: int = None, *, text: str):
+        await ctx.message.delete()
+
+        if count is None:
+            count = 10**10
+        
+        for i in range(count):
+            await ctx.message.edit(text)
+
+    @commands.command()
+    async def aspam (self, ctx, count: int = None, *, text: str):
+        await ctx.message.delete()
+
+        if count is None:
+            count = 10**10
+        
+        for i in range(count // 5):
+            tasks = [ctx.send(text) for j in range(5)]
+            await asyncio.gather(*tasks)
+
+        tasks = [ctx.send(text) for j in range(count % 5)]
+        await asyncio.gather(*tasks)
+
+    @commands.command(aliases=["ip"])
+    async def iplookup (self, ctx, ip: str):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://ip-api.com/json/{ip}") as req:
+                response = await req.json()
+                await ctx.message.edit(f"""# {ip}
+`COUNTRY: {response["country"]}`
+`STATE: {response["regionName"]}`
+`CITY`: {response["city"]}`
+`ZIP: {response["zip"]}`
+`CORDS: {response["lat"]}, {response["lon"]}`
+`ISP: {response["isp"]}`
+`PROXY: {response["proxy"]}`
+`MOBILE: {response["mobile"]}`
+
+https://www.google.com/maps/place/{response["lat"]},{response["lon"]}""")
 
 async def setup (sachs):
     await sachs.add_cog(Utils(sachs))
