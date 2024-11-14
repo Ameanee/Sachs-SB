@@ -8,7 +8,7 @@ class Fun (commands.Cog):
         self.sachs = sachs
 
     @commands.command()
-    async def ask_ai (self, ctx, *, question: str):
+    async def ask_ai (self, ctx, *, question: str): # broken for now
         async with aiohttp.ClientSession() as session:
             async with session.post("https://ai-api.replit.app/api/v1/chat", json={
                 "message": question,
