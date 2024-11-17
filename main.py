@@ -9,9 +9,9 @@ from discord.ext import commands
 sachs = commands.Bot(
     command_prefix=settings.PREFIX,
     help_command=None,
-    self_bot=True
+    self_bot=True,
+    case_insensitive=True
 )
-
 
 @sachs.event
 async def on_ready():
@@ -28,7 +28,7 @@ async def on_ready():
     else:
         os.system("clear")
 
-    print(Fore.LIGHTGREEN_EX + r"""{Fore.LIGHTGREEN_EX}
+    print(Fore.LIGHTGREEN_EX + r"""
              ,. -,                    ,.,   '                   ,. - .,               .·¨'`;        ,.·´¨;\                ,. -,    
        ,.·'´,    ,'\                 ;´   '· .,             ,·'´ ,. - ,   ';\          ';   ;'\       ';   ;::\         ,.·'´,    ,'\   
    ,·'´ .·´'´-·'´::::\'             .´  .-,    ';\       ,·´  .'´\:::::;'   ;:'\ '       ;   ;::'\      ,'   ;::';    ,·'´ .·´'´-·'´::::\' 

@@ -17,7 +17,10 @@ content = [
 > `{p}token [token]` - Looks up token""",
 
     f"""# Fun Commands
-> `{p}ask_ai [question]` - Ask AI!
-> `{p}cat` - Random cat pic
-> `{p}dog` - Random dog pic"""
+> `{p}ask_ai [question]` - Ask AI! :robot:
+> `{p}cat` - Random cat pic :kissing_cat:
+> `{p}dog` - Random dog pic :dog:"""
 ]
+
+async def setup (bot):
+    ...

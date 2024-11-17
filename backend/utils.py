@@ -1,7 +1,10 @@
 import base64
 import asyncio
+import aiohttp
+from datetime import datetime
 
 import settings
+from .worker import content
 
 import discord
 from discord.ext import commands
@@ -11,7 +14,7 @@ class Utils (commands.Cog):
         self.sachs = sachs
 
     @commands.command()
-    async def help (ctx, category: str or int = None):
+    async def help (self, ctx, category: str = None):
         pages = {
             "utils": 0,
             "fun": 1
@@ -19,6 +22,7 @@ class Utils (commands.Cog):
         page = 0
         
         if category is not None:
+            print(category)
             page = pages[category]
 
         if settings.EMBED:
@@ -28,14 +32,19 @@ class Utils (commands.Cog):
 
     @commands.command()
     async def user (self, ctx, user: discord.User):
-        await ctx.message.edit(f"""# {user.display_name}
+        unix = int(user.created_at.timestamp())
+        token = base64.b64encode(str(user.id).encode("utf-8")).decode("utf-8")[:-2]
+        if settings.EMBED:
+            await ctx.message.edit(f"{settings.VANITY}https://jewcord.com/embed/user?name={user.name}&id={user.id}&bot={user.bot}&created_at={unix}&color={str(user.accent_color)[1:]}&token={token}&avatar_url={user.avatar.url}&b_color={str(user.accent_color)[1:]}")
+        else:
+            await ctx.message.edit(f"""# {user.display_name}
 `{user.name}`
-        
-`ID: {user.id}`
-`BOT: {user.bot}`
-`CREATED AT: {user.created_at}`
-`BANNER/ACCENT COLOR: {user.color}/{user.accent_color}`
-`TOKEN: {base64.b64encode(str(user.id).encode("utf-8")).decode("utf-8")[:-2]}`
+            
+> `ID: {user.id}`
+> `BOT: {user.bot}`
+> `CREATED AT: {user.created_at}`
+> `BANNER/ACCENT COLOR: {user.color}/{user.accent_color}`
+> `TOKEN: {token}`
 
 {user.avatar.url}""")
 
@@ -44,13 +53,13 @@ class Utils (commands.Cog):
         guild = ctx.guild
         await ctx.message.edit(f"""# {guild.name}
         
-`ID: {guild.id}`
-`OWNER: {guild.owner_id}`
-`CREATED AT: {guild.created_at}`
-`MEMBERS: {guild.member_count}`
-`ROLES: {len(guild.roles)}`
-`CHANNELS: {len(guild.channels)}`
-`EMOJIS: {len(guild.emojis)}`
+> `ID: {guild.id}`
+> `OWNER: {guild.owner_id}`
+> `CREATED AT: {guild.created_at}`
+> `MEMBERS: {guild.member_count}`
+> `ROLES: {len(guild.roles)}`
+> `CHANNELS: {len(guild.channels)}`
+> `EMOJIS: {len(guild.emojis)}`
 
 {guild.icon.url}""")
 
@@ -90,7 +99,7 @@ class Utils (commands.Cog):
             count = 10**10
         
         for i in range(count):
-            await ctx.message.send(text)
+            await ctx.send(text)
 
     @commands.command()
     async def aspam (self, ctx, count: int = None, *, text: str):
@@ -109,17 +118,18 @@ class Utils (commands.Cog):
     @commands.command(aliases=["ip"])
     async def iplookup (self, ctx, ip: str):
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://ip-api.com/json/{ip}") as req:
+            async with session.get(f"http://ip-api.com/json/{ip}?fields=country,regionName,city,zip,lat,lon,isp,mobile,proxy") as req:
                 response = await req.json()
                 await ctx.message.edit(f"""# {ip}
-`COUNTRY: {response["country"]}`
-`STATE: {response["regionName"]}`
-`CITY`: {response["city"]}`
-`ZIP: {response["zip"]}`
-`CORDS: {response["lat"]}, {response["lon"]}`
-`ISP: {response["isp"]}`
-`PROXY: {response["proxy"]}`
-`MOBILE: {response["mobile"]}`
+                
+> `COUNTRY: {response["country"]}`
+> `STATE: {response["regionName"]}`
+> `CITY: {response["city"]}`
+> `ZIP: {response["zip"]}`
+> `CORDS: {response["lat"]}, {response["lon"]}`
+> `ISP: {response["isp"]}`
+> `PROXY: {response["proxy"]}`
+> `MOBILE: {response["mobile"]}`
 
 https://www.google.com/maps/place/{response["lat"]},{response["lon"]}""")
 
