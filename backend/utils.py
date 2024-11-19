@@ -1,6 +1,7 @@
 import base64
 import asyncio
 import aiohttp
+import random
 from datetime import datetime
 
 import settings
@@ -35,7 +36,7 @@ class Utils (commands.Cog):
         unix = int(user.created_at.timestamp())
         token = base64.b64encode(str(user.id).encode("utf-8")).decode("utf-8")[:-2]
         if settings.EMBED:
-            await ctx.message.edit(f"{settings.VANITY}https://jewcord.com/embed/user?name={user.name}&id={user.id}&bot={user.bot}&created_at={unix}&color={str(user.accent_color)[1:]}&token={token}&avatar_url={user.avatar.url}&b_color={str(user.accent_color)[1:]}")
+            await ctx.message.edit(f"{settings.VANITY}https://jewcord.com/embed/user?name={user.name}&id={user.id}&bot={user.bot}&created_at={unix}&color={str(user.accent_color)[1:]}&token={token}&avatar_url={user.avatar.url}&b_color={str(user.accent_color)[1:]}&anticache={random.randint(1, 10**10)}")
         else:
             await ctx.message.edit(f"""# {user.display_name}
 `{user.name}`
@@ -51,7 +52,10 @@ class Utils (commands.Cog):
     @commands.command(aliases=["guild"])
     async def server (self, ctx):
         guild = ctx.guild
-        await ctx.message.edit(f"""# {guild.name}
+        if settings.EMBED:
+            await ctx.message.edit(f"{settings.VANITY}https://jewcord.com/embed/server?name={guild.name}&id={guild.id}&owner_id={guild.owner_id}&created_at={unix}&mc={guild.member_count}&rc={len(guild.roles)}&cc={len(guild.channels)}&ec={len(guild.emojis)}&")
+        else:
+            await ctx.message.edit(f"""# {guild.name}
         
 > `ID: {guild.id}`
 > `OWNER: {guild.owner_id}`
@@ -65,12 +69,12 @@ class Utils (commands.Cog):
 
     @commands.command()
     async def block (self, ctx, user: discord.User):
-        await self.sachs.block_user(user)
+        await user.block()
         await ctx.message.edit(f"`Blocked {user.id}`", delete_after=settings.DELETE_AFTER)
 
     @commands.command()
     async def unblock (self, ctx, user: discord.User):
-        await self.sachs.unblock_user(user)
+        await user.unblock()
         await ctx.message.edit(f"`Unblocked {user.id}`", delete_after=settings.DELETE_AFTER)
 
     @commands.command(aliases=["gc"])
